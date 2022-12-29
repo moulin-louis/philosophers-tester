@@ -1,5 +1,5 @@
 # A simple tester for philo project in 42 cursus
-![image](https://user-images.githubusercontent.com/52115261/209983776-b02ccb8a-24d5-47ab-9403-6277e978e91c.png)
+![image](https://user-images.githubusercontent.com/52115261/209987096-85af5b5e-b208-4a19-9e17-66353f34711f.png)
 Its a simple script in shell mean to test few aspest of your philo programs.
 For now it doesnt check for leak, dead lock, data race but its comming in the near future
 
