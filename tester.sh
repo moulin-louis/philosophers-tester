@@ -4,9 +4,12 @@
 #fn to check if philo exist, if its exist kill it
 cease_n_desit_philo()
 {
+	#grep philo in process list
 	pgrep philo > /dev/null
+	#pgre return 0 if he find a process
 	if [ "$?" -eq 0 ];then
 		echo "$RED- Found a philo process in the background...$RESET"
+		#kill philo process
 		pkill philo
 		echo "$RED- Process killed$RESET"
 	fi	
@@ -15,14 +18,19 @@ cease_n_desit_philo()
 #fn to launch philo and return its exit code
 launch_philo ()
 {
+	#if 5 arg was given 
     if [ $# -eq 5 ];then
+		#exe philo process in background and with the output in the void
         ("$1" "$3 $4 $5 $6" > /dev/null)&
-        return $?
+		#return returned value of philo
+        return 1
     fi  
 
     if [ $# -eq 6 ];then
+		#exe philo process in background and with the output in the void
         ("$1" "$3 $4 $5 $6 $7" > /dev/null)&
-        return $?
+		#return returned value of philo
+        return 1
     fi
 
     echo "Wrong nbr of arg for launch philo"
@@ -47,8 +55,9 @@ parsing_check_process ()
 test_parsing ()
 {
 	echo -n "$GREEN- Parsing test :$RESET"
-    #run philo program in the background
+	#search for philo process in background
 	cease_n_desit_philo
+    #run philo program in the background
     ("$1" > /dev/null)&
     #check if the process still exist
     parsing_check_process
@@ -127,6 +136,7 @@ test_parsing ()
 
 test_that_dont_die()
 {
+	#set all arg into var for a cleaner code
 	philo_exe=$1
 	nbr_philo=$2
 	ttd=$3
@@ -136,10 +146,14 @@ test_that_dont_die()
 	sec=1
 	time_to_run=20
 
+	#search for philo process in background
 	cease_n_desit_philo
 	echo -n "$GREEN- Launching 3 run of $time_to_run sec for PATH/philo $nbr_philo $ttd $tte $tts : $RESET"
-	("$philo_exe" $nbr_philo $ttd $tte $tts > /dev/null)&
 	while [ $nbr_run -ne 3 ];do
+		#launch philo process
+		("$philo_exe" $nbr_philo $ttd $tte $tts > /dev/null)&
+		launch_philo $philo_exe $nbr_philo $ttd $tte $tts
+		#check for time_to_run sec if philo still run
 		while [ $sec -lt $time_to_run ];do
             pgrep philo > /dev/null
             if [ "$?" -eq 1 ];then
@@ -148,12 +162,13 @@ test_that_dont_die()
             sleep 1
             sec=$(( $sec + 1 ))
         done
+		#kill philo process
         pkill philo
-        ("$philo_exe" $nbr_philo $ttd $tte $tts > /dev/null)&
+		#reset timer
         sec=0
+		#increment nbr of run pass
 	    nbr_run=$(( $nbr_run + 1 ))
 	done
-	pkill philo
 	echo "$GREEN ✅ $RESET"
 }
 
@@ -227,6 +242,7 @@ launch_test_that_dont_die()
 
 test_that_die()
 {
+	#set all arg into var for a cleaner code
 	philo_exe=$1
 	nbr_philo=$2
 	ttd=$3
@@ -261,10 +277,10 @@ test_that_die()
 			echo "❌"
 			return 1
 		fi
+		#deleting temp junk file
 		rm ./temp_tester.log
 		nbr_run=$(( $nbr_run + 1 ))
 	done
-	pkill philo
 	echo "$GREEN ✅ $RESET"
 }
 
@@ -291,6 +307,7 @@ launch_test_that_die()
 
 test_nbr_meal()
 {
+	#set all arg into var for a cleaner code
 	philo_exe=$1
 	nbr_philo=$2
 	ttd=$3
@@ -303,22 +320,28 @@ test_nbr_meal()
 	cease_n_desit_philo
 	echo -n "$GREEN- Launching 3 run of PATH/philo $nbr_philo $ttd $tte $tts $nbr_meal :$RESET"
 	while [ $nbr_run -lt 3 ];do
+		#launching philo
 		("$philo_exe" $nbr_philo $ttd $tte $tts $nbr_meal > ./temp_tester.log)
+		#waiting for 5 sec
 		sleep 5
+		#checking if philo process exist
 		pgrep philo > /dev/null
 		if [ "$?" -eq 0 ];then
 			echo "❌"
 			echo "$RED- Your program should stop with this args$RESET"
 			return 1
 		fi
+		#check the total of meal eaten during the simulation
 		current_lines=$(grep eating "./temp_tester.log" | wc -l)
+		#if current meal eating is lower than expected, test failed
 		if [ $current_lines -lt $nbr_line_expected ];then
 			echo "❌"
 			echo "$RED- Your programs output $current_lines meal, $nbr_line_expected expected$RESET"
 			return 1
 		fi
-		nbr_run=$(( $nbr_run + 1 ))
+		#deleting temp junk file
 		rm ./temp_tester.log
+		nbr_run=$(( $nbr_run + 1 ))
 	done
 	echo "$GREEN ✅ $RESET"
 }
@@ -340,7 +363,7 @@ launch_test_nbr_meal()
 }
 
 #Define color constant
-GREEN="\e[92m"
+GREEN=""
 RED="\r\e[91m"
 RESET="\e[0m"
 
@@ -350,6 +373,7 @@ if [ "$#" -ne 1 ]; then
     exit
 fi
 
+#checkinf if 0 philo process existe
 cease_n_desit_philo
 
 echo "$GREEN- Working on folder : $1 $RESET"
@@ -377,4 +401,5 @@ launch_test_that_dont_die $philo_exe
 #launch a bunch of test of situations where 0 philo should die
 launch_test_that_die $philo_exe
 
+#launch a bunch of test to check if philo eat at least the right amount given
 launch_test_nbr_meal $philo_exe
