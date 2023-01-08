@@ -117,6 +117,20 @@ test_parsing ()
         exit 1
     fi
 	cease_n_desit_philo
+    launch_philo $1 $2 4 2147483648654645 200 200
+    parsing_check_process
+    if [ "$?" -eq 1 ];then
+        echo "\r\e[91m- ./philo 4 2147483648 200 200 should not work\e[0m"
+        exit 1
+    fi
+	cease_n_desit_philo
+    launch_philo $1 $2 4 214748354353453453648654645 200 200
+    parsing_check_process
+    if [ "$?" -eq 1 ];then
+        echo "\r\e[91m- ./philo 4 2147483648 200 200 should not work\e[0m"
+        exit 1
+    fi
+	cease_n_desit_philo
     launch_philo $1 $2 0 800 200 200
     parsing_check_process
     if [ "$?" -eq 1 ];then
@@ -372,6 +386,8 @@ if [ "$#" -ne 1 ]; then
 	echo "gib sh start.sh </path/to/project_folder>"
     exit
 fi
+
+echo "$RED IMPORTANT : Do not launch any instance of philo during this test, this will lead to undefined behaviour, most likely some test will faild for no reasong$RESET"
 
 #checkinf if 0 philo process existe
 cease_n_desit_philo
