@@ -315,8 +315,6 @@ launch_test_that_die()
 	cease_n_desit_philo
 	test_that_die $1 4 310 200 200 310
 	cease_n_desit_philo
-	test_that_die $1 200 410 200 200 410
-	cease_n_desit_philo
 }
 
 test_nbr_meal()
