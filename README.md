@@ -1,8 +1,7 @@
 # A simple tester for philo project in 42 cursus
 ![image](https://user-images.githubusercontent.com/52115261/209988470-ecc585c5-c19c-4c5a-857f-57dcbb799576.png)
 
-Its a simple script in shell mean to test few aspest of your philo programs.
-For now it doesnt check for leak, dead lock, data race but its comming in the near future
+Its a simple shell script mean to test few aspect of your philo programs.
 
 It will check :
 - Basic parsing
@@ -12,6 +11,7 @@ It will check :
 
 # IMPORTANT
 This is **not** mean to be used in a correction. If a test failed you need to find why, where and how !
+
 # How to launch it :
 Usage : ./tester.sh <path_to_philo_folder>
 Exemple : ./tester.sh .. or ./tester.sh ~/work42/philo
